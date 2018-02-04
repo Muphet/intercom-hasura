@@ -3,3 +3,7 @@ node_modules
 npm-debug.log
 build
 .DS_Store
+
+# NPM
+node_modules
+package-lock.json
