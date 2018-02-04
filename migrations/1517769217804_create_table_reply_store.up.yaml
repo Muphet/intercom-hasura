@@ -1,0 +1,7 @@
+- args:
+    sql: CREATE TABLE "reply_store"("id" serial NOT NULL, "key" text NOT NULL, "message"
+      text NOT NULL, PRIMARY KEY ("id") )
+  type: run_sql
+- args:
+    name: reply_store
+  type: add_existing_table_or_view

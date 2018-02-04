@@ -1,0 +1,3 @@
+- args:
+    sql: DROP TABLE "keyval"
+  type: run_sql
