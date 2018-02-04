@@ -49,7 +49,7 @@ const CORS_AllowAllHeaders = (req, res, next) => {
     next();
 };
 
-app.use(CORS_AllowAllHeaders);
+// app.use(CORS_AllowAllHeaders);
 
 /**
  * An example function to send replies to the user
