@@ -1,0 +1,8 @@
+
+html, body { height: 100%; }
+body {
+  margin: 0 auto;
+  font-family: 'Open Sans', 'Lato', Arial, sans-serif;
+}
+
+#root { height: 100%; }
