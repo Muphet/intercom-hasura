@@ -11,18 +11,26 @@ Download `nodejs` and `npm` for your platform:
 
 Clone this repository:
 ```
-git clone https://github.com/methusael13/intercom-webhook.git
+git clone https://github.com/methusael13/intercom-hasura.git
 ```
 
-Install dependencies:
+Add your cluster:
 ```
-cd intercom-webhook
-npm install
-```
-
-Run server:
-```
-npm start
+hasura cluster add <cluster-name> <alias>
 ```
 
-Open your favourite browser and browse to `http://localhost:3000`
+Set your cluster to be default:
+```
+hasura cluster set-default <alias>
+```
+
+Modify cluster data:
+- Set cluster name in `microservices/ui/app/src/components/Config.js`
+- Set cluster name in `microservices/ui/app/package.json`
+
+Deploy to Hasura:
+```
+git push <alias> master
+```
+
+Open your favourite browser and browse to `https://ui.cluster-name.hasura-app.io`
