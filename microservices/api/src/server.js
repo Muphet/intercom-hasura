@@ -10,6 +10,7 @@ var fetch  = require('node-fetch');
 var util = require('util');
 
 var hasuraExamplesRouter = require('./hasuraExamples');
+var projectConfig = require('./config');
 var server = require('http').Server(app);
 
 router.use(morgan('dev'));
@@ -31,6 +32,14 @@ app.get("/intercom", function (req, res)
     res.send("OK");
 });
 
+const HASURA_CONFIG = {
+  urls: {
+    data: "https://data." + projectConfig.cluster + ".hasura-app.io/v1/query"
+  },
+  token: {
+    admin: "8a620887b334de0ecce79da4f2fdce7900517fa69f3cd6d1"
+  }
+}
 
 /**
  * An example function to send replies to the user
@@ -119,9 +128,8 @@ app.post('/intercom_webhook', (req, res) =>
  */
 const hasuraInsert = (key, value) =>
 {
-    var url_data = "https://data.disabled79.hasura-app.io/";
-    var url_data_query = url_data + "v1/query";
-    var ACCESS_TOKEN = "9733d956517e310dc05ca682e73f93373b1e41524660d3c3";
+    var url_data_query = HASURA_CONFIG.urls.data;
+    var ACCESS_TOKEN = HASURA_CONFIG.token.admin;
 
     // Define Fetch headers
     let _headers = {
@@ -134,9 +142,9 @@ const hasuraInsert = (key, value) =>
     let data = {
         'type': 'insert',
         "args": {
-            "table": "keyval",
+            "table": "reply_store",
             "objects": [
-                {"key": key, "val" : value}
+                {"key": key, "message" : value}
             ]
         }
     };
@@ -161,9 +169,8 @@ const hasuraInsert = (key, value) =>
  */
 const hasuraRetreive = (key, callback) =>
 {
-    var url_data = "https://data.disabled79.hasura-app.io/";
-    var url_data_query = url_data + "v1/query";
-    var ACCESS_TOKEN = "9733d956517e310dc05ca682e73f93373b1e41524660d3c3";
+  var url_data_query = HASURA_CONFIG.urls.data;
+  var ACCESS_TOKEN = HASURA_CONFIG.token.admin;
 
     // Define Fetch headers
     let _headers = {
@@ -176,8 +183,8 @@ const hasuraRetreive = (key, callback) =>
     let data = {
         "type": "select",
         "args": {
-            "table": "keyval",
-            "columns": [ "val" ],
+            "table": "reply_store",
+            "columns": [ "message" ],
             "where" : {"key" : key}
         }
     };
@@ -190,32 +197,23 @@ const hasuraRetreive = (key, callback) =>
         method: 'POST',
         body: JSON.stringify(data),
         headers: _headers
-    }).then(response =>
-        {
-            return response.text()
-        })
-        .catch(error => {
-            console.log('Error: ' + error);
-            callback("Error");
-        })
-        .then(response =>
-        {
-            console.log("Resp : " + response);
-            let parsed_resp = JSON.parse(response);
-            console.log(parsed_resp);
-            if(parsed_resp.length ===0)
-            {
-                callback("I am sorry I couldn't find a suitable reply")
-            }
-            else
-            {
-                callback(parsed_resp[0].val);
-            }
-            //respp = response[0].val;
-            //console.log("Response : " + respp);
-            //console.log(util.inspect(response, false, null)); callback(respp);
-            //
-        });
+    }).then(response => {
+        return response.text()
+    }).catch(error => {
+        console.log('Error: ' + error);
+        callback("Error");
+    }).then(response => {
+        console.log("Resp : " + response);
+        
+        let parsed_resp = JSON.parse(response);
+        console.log(parsed_resp);
+        
+        if (parsed_resp.length === 0) {
+            callback("I am sorry I couldn't find a suitable reply")
+        } else {
+            callback(parsed_resp[0].val);
+        }
+    });
 };
 
 app.post("/add_entry", function (req, res)
@@ -223,10 +221,10 @@ app.post("/add_entry", function (req, res)
     //JSON {"key":"keyyy", "value":"valueee"}
     console.log(req.body); // populated!
     console.log("Data : \n");
-    console.log("key = " + k + "  value = " + v);
 
     var k = req.body.key;
     var v = req.body.value;
+    console.log("key = " + k + "  value = " + v);
 
     hasuraInsert(k, v);
     res.send("Ok");
