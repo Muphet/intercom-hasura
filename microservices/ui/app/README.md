@@ -11,7 +11,7 @@ Download `nodejs` and `npm` for your platform:
 
 Clone this repository:
 ```
-git clone https://github.com/methusael13/intercom-hasura.git
+git clone https://github.com/methusael13/intercom-hasura.git && cd intercom-hasura
 ```
 
 Add your cluster:
