@@ -4,7 +4,7 @@ import { Config } from './Config';
 
 const LOCAL_STORAGE = window.localStorage;
 
-const HASURA_DEFAULT_HEADERS = {
+export const HASURA_DEFAULT_HEADERS = {
   'Accept': 'application/json',
   'Content-Type': 'application/json; charset=utf-8'
 };

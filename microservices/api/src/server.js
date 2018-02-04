@@ -16,9 +16,7 @@ var server = require('http').Server(app);
 router.use(morgan('dev'));
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/', hasuraExamplesRouter);
 app.get("/intercom", function (req, res)
@@ -40,6 +38,18 @@ const HASURA_CONFIG = {
     admin: "8a620887b334de0ecce79da4f2fdce7900517fa69f3cd6d1"
   }
 }
+
+/*
+ * Router middleware to handle CORS issues
+ */
+const CORS_AllowAllHeaders = (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Accept, Origin, Content-Type, X-Auth-Token');
+    next();
+};
+
+app.use(CORS_AllowAllHeaders);
 
 /**
  * An example function to send replies to the user
@@ -83,8 +93,7 @@ const intercomReply = (body, conversation_id) =>
 /**
  * Processes Webhook notifications from Intercom
  */
-app.post('/intercom_webhook', (req, res) =>
-{
+app.post('/intercom_webhook', (req, res) => {
     res.status(200).send('OK');
     console.log(util.inspect(req.body, false, null));
 
@@ -114,8 +123,7 @@ app.post('/intercom_webhook', (req, res) =>
     console.log('User says: ' + msg);
 
     // Dispatch reply
-    reply = hasuraRetreive(msg, function(resp)
-    {
+    reply = hasuraRetreive(msg, (resp) => {
         console.log("Reply : " + resp);
         intercomReply(resp, conversation_id);
     });
@@ -123,11 +131,9 @@ app.post('/intercom_webhook', (req, res) =>
 
 /**
  * An example function to insert key value pair to Hasura Data API
- * @param  key      The message body of the reply
- * @param  value 	ID of the conversation to send this reply to
+ * @param  data     An array of {key, message} objects
  */
-const hasuraInsert = (key, value) =>
-{
+const hasuraInsert = (data, onReturn) => {
     var url_data_query = HASURA_CONFIG.urls.data;
     var ACCESS_TOKEN = HASURA_CONFIG.token.admin;
 
@@ -139,36 +145,34 @@ const hasuraInsert = (key, value) =>
     };
 
     // Populate payload
-    let data = {
+    let payload = {
         'type': 'insert',
         "args": {
             "table": "reply_store",
-            "objects": [
-                {"key": key, "message" : value}
-            ]
+            "objects": data
         }
     };
 
-    console.log(util.inspect(data, false, null));
+    console.log(util.inspect(payload, false, null));
 
-    //console.log("Data : " + data);
-    // Dispatch data
+    // Dispatch payload
     fetch(url_data_query, {
         method: 'POST',
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
         headers: _headers
     }).then(response => response.json())
     .catch(error => { console.log('Error: ' + error); })
-    .then(response => { console.log(response); });
-
+    .then(response => {
+        console.log(response);
+        onReturn && onReturn(response);
+    });
 };
 
 /**
  * An example function to get the value from the key!
  * @param  key      The message body of the reply
  */
-const hasuraRetreive = (key, callback) =>
-{
+const hasuraRetreive = (key, callback) => {
   var url_data_query = HASURA_CONFIG.urls.data;
   var ACCESS_TOKEN = HASURA_CONFIG.token.admin;
 
@@ -216,18 +220,20 @@ const hasuraRetreive = (key, callback) =>
     });
 };
 
-app.post("/add_entry", function (req, res)
-{
-    //JSON {"key":"keyyy", "value":"valueee"}
+app.post("/add_entries", function(req, res) {
     console.log(req.body); // populated!
-    console.log("Data : \n");
 
-    var k = req.body.key;
-    var v = req.body.value;
-    console.log("key = " + k + "  value = " + v);
+    // Make sure keys are lowercase
+    let data = req.body.data.map((value) => {
+        return { ...value, key: value.key.toLowerCase() };
+    });
 
-    hasuraInsert(k, v);
-    res.send("Ok");
+    hasuraInsert(data, (response) => {
+        if (response.affected_rows)
+            res.status(200).send({ status: 'success' });
+        else
+            res.status(500).send({ status: 'error' });
+    });
 });
 
 app.get("/get_value", function (req, res)

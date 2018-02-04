@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { mFetch } from './Auth';
+import { dispatchTableData } from './DataDispatcher';
 
 import './css/DataTable.css';
 
@@ -110,6 +110,7 @@ class DataTable extends Component {
     this.addRow = this.addRow.bind(this);
     this.deleteRow = this.deleteRow.bind(this);
     this.uploadTableData = this.uploadTableData.bind(this);
+    this.resetButtonStatus = this.resetButtonStatus.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -124,11 +125,44 @@ class DataTable extends Component {
     }
   }
 
+  /*
+   * Resets button status to idle by sending a message to the parent.
+   * @params int delay  The amount of delay in milliseconds before the reset
+   */
+  resetButtonStatus(delay = 0) {
+    if (delay === 0) {
+      this.props.notifyUploadStatus('idle');
+    } else {
+      window.setTimeout((props) => {
+        props.notifyUploadStatus('idle');
+      }, delay, this.props);
+    }
+  }
+
   uploadTableData() {
+    // Check if data is empty
+    if (this.state.data.length === 0) return;
+
+    // Filter and remove empty row data
+    let table = this.state.data.filter((object, idx) => {
+      // Strip whitespace from fields and check length
+      return  object.key && object.key.trim().length > 0 &&
+              object.message && object.message.trim().length > 0;
+    });
+
     // Notify parent of upload status
     this.props.notifyUploadStatus('processing');
 
     // Use mFetch to upload data
+    dispatchTableData(
+      table, (data) => {
+        this.props.notifyUploadStatus('success');
+        this.resetButtonStatus();
+      }, (error) => {
+        this.props.notifyUploadStatus('error');
+        this.resetButtonStatus();
+      }
+    );
   }
 
   addRow(key, message) {

@@ -50,19 +50,52 @@ class AdminPage extends Component {
     this.state = {
       clearTable: false, uploadTable: false,
       redirectToMain: false, logoutText: 'Logout',
-      submitStatus: 'idle', tableUploadFeedbackMsg: null
+      submitStatus: 'idle', tableUploadFeedback: {}
     };
 
     // Bind class methods
     this.triggerTableClear = this.triggerTableClear.bind(this);
     this.triggerDataUpload = this.triggerDataUpload.bind(this);
     this.triggerLogout = this.triggerLogout.bind(this);
+    this.resetMessageBox = this.resetMessageBox.bind(this);
     this.onUploadStatusChanged = this.onUploadStatusChanged.bind(this);
+  }
+
+  /*
+   * Resets MessageBox by hiding it after an optional specific amount of delay.
+   * @params int delay  The amount of delay in milliseconds before the reset
+   */
+  resetMessageBox(delay = 0) {
+    if (delay === 0) {
+      this.setState({ tableUploadFeedback: {} });
+    } else {
+      window.setTimeout((instance) => {
+        instance.setState({ tableUploadFeedback: {} });
+      }, delay, this);
+    }
   }
 
   onUploadStatusChanged(status) {
     // Should change button status to provide upload feedback
-    this.setState({ submitStatus: status });
+    if (status !== 'error') {
+      // No need to display error button
+      this.setState({ submitStatus: status });
+    }
+
+    // Display a bread-crumb like message box
+    if (status === 'success') {
+      this.setState({
+        tableUploadFeedback: { message: "Data submitted successfully", type: "info" }
+      });
+      // Set a timeout for this box to vanish
+      this.resetMessageBox(8000);
+    } else if (status === 'error') {
+      this.setState({
+        tableUploadFeedback: { message: "Error submitting data", type: "error" }
+      });
+      // Set a timeout for this box to vanish
+      this.resetMessageBox(8000);
+    }
   }
 
   triggerLogout() {
@@ -96,7 +129,9 @@ class AdminPage extends Component {
       this.state.uploadTable !== nextState.uploadTable ||
       this.state.redirectToMain !== nextState.redirectToMain ||
       this.state.logoutText !== nextState.logoutText ||
-      this.state.tableUploadFeedbackMsg !== nextState.tableUploadFeedbackMsg
+      this.state.submitStatus !== nextState.submitStatus ||
+      this.state.tableUploadFeedback.message !== nextState.tableUploadFeedback.message ||
+      this.state.tableUploadFeedback.type !== nextState.tableUploadFeedback.type
     );
   }
 
@@ -111,8 +146,9 @@ class AdminPage extends Component {
         <div className="app-content app-container">
           <div className="app-control-panel">
             {
-              this.state.tableUploadFeedbackMsg &&
-              <MessageBox message="Anything new to upload?" type="warning"
+              this.state.tableUploadFeedback.message &&
+              <MessageBox message={this.state.tableUploadFeedback.message}
+                          type={this.state.tableUploadFeedback.type}
                           className="table-msg" />
             }
             <div className="btn-panel control-item">
