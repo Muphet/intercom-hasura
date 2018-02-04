@@ -1,5 +1,6 @@
 
 import { appLog } from './UtilComponents';
+import { Config } from './Config';
 
 const LOCAL_STORAGE = window.localStorage;
 
@@ -42,8 +43,8 @@ class Auth {
     
     // Hasura API endpoints
     this.urls = {
-      auth: "https://auth." + this.config.cluster + ".hasura-app.io",
-      data: "https://data." + this.config.cluster + ".hasura-app.io"
+      auth: "https://auth." + Config.cluster + ".hasura-app.io",
+      data: "https://data." + Config.cluster + ".hasura-app.io"
     }
 
     // Bind class methods to this.
