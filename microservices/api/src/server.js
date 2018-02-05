@@ -217,7 +217,7 @@ const hasuraRetreive = (key, callback) => {
         if (parsed_resp.length === 0) {
             callback("I am sorry I couldn't find a suitable reply")
         } else {
-            callback(parsed_resp[0].val);
+            callback(parsed_resp[0]);
         }
     });
 };
