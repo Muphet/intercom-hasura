@@ -118,6 +118,8 @@ app.post('/intercom_webhook', (req, res) => {
     // All incoming messages come wrapped in one or the other HTML tags.
     // We simply strip out this opening and closing tags
     msg = msg.replace(/<[^>]+>/g, '');
+    // Make user messages case-insensitive
+    msg = msg.toLowerCase();
 
     // Print the me ssage sent by the user
     console.log('User says: ' + msg);
@@ -214,7 +216,7 @@ const hasuraRetreive = (key, callback) => {
         console.log(parsed_resp);
         
         if (parsed_resp.length === 0) {
-            callback("I am sorry I couldn't find a suitable reply")
+            callback("I'm sorry, I couldn't understand that.")
         } else {
             callback(parsed_resp[0].message);
         }
