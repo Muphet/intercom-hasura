@@ -197,7 +197,6 @@ const hasuraRetreive = (key, callback) => {
 
     console.log(util.inspect(data, false, null) + "\n\n\n");
 
-    //console.log("Data : " + data);
     // Dispatch data
     fetch(url_data_query, {
         method: 'POST',
@@ -217,7 +216,7 @@ const hasuraRetreive = (key, callback) => {
         if (parsed_resp.length === 0) {
             callback("I am sorry I couldn't find a suitable reply")
         } else {
-            callback(parsed_resp[0]);
+            callback(parsed_resp[0].message);
         }
     });
 };
@@ -238,18 +237,14 @@ app.post("/add_entries", function (req, res) {
     });
 });
 
-app.get("/get_value", function (req, res)
-{
+app.get("/get_value", function (req, res) {
     var k = req.query.key;
     console.log("key = " + k);
 
-    hasuraRetreive(k, function(ress)
-    {
-        //res.send("Ok");
-        console.log("Response from Callback function : " + ress);
+    hasuraRetreive(k, function(ress) {
+        console.log("Response from callback function : " + ress);
         res.send(JSON.stringify({"val" : ress}));
     });
-
 });
 
 var port = process.env.PORT || 8080;
