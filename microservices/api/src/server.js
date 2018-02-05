@@ -222,15 +222,15 @@ const hasuraRetreive = (key, callback) => {
     });
 };
 
-app.post("/add_entries", function(req, res) {
+app.post("/add_entries", function (req, res) {
     console.log(req.body); // populated!
 
     // Make sure keys are lowercase
-    let data = req.body.data.map((value) => {
-        return { ...value, key: value.key.toLowerCase() };
-    });
+//     let data = req.body.data.map((value) => {
+//         return { ...value, key: value.key.toLowerCase() };
+//     });
 
-    hasuraInsert(data, (response) => {
+    hasuraInsert(re.body.data, (response) => {
         if (response.affected_rows)
             res.status(200).send({ status: 'success' });
         else
