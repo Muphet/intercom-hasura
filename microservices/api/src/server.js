@@ -30,14 +30,14 @@ app.get("/intercom", function (req, res)
     res.send("OK");
 });
 
-const HASURA_CONFIG = {
-  urls: {
-    data: "https://data.brood19.hasura-app.io/v1/query"
-  },
-  token: {
-    admin: "8a620887b334de0ecce79da4f2fdce7900517fa69f3cd6d1"
-  }
-};
+// const HASURA_CONFIG = {
+//   urls: {
+//     data: "https://data.brood19.hasura-app.io/v1/query"
+//   },
+//   token: {
+//     admin: "8a620887b334de0ecce79da4f2fdce7900517fa69f3cd6d1"
+//   }
+// };
 
 /*
  * Router middleware to handle CORS issues
@@ -134,8 +134,9 @@ app.post('/intercom_webhook', (req, res) => {
  * @param  data     An array of {key, message} objects
  */
 const hasuraInsert = (data, onReturn) => {
-    var url_data_query = HASURA_CONFIG.urls.data;
-    var ACCESS_TOKEN = HASURA_CONFIG.token.admin;
+    var url_data = "https://data.brood19.hasura-app.io/";
+    var url_data_query = url_data + "v1/query";
+    var ACCESS_TOKEN = "8a620887b334de0ecce79da4f2fdce7900517fa69f3cd6d1";
 
     // Define Fetch headers
     let _headers = {
@@ -173,8 +174,9 @@ const hasuraInsert = (data, onReturn) => {
  * @param  key      The message body of the reply
  */
 const hasuraRetreive = (key, callback) => {
-  var url_data_query = HASURA_CONFIG.urls.data;
-  var ACCESS_TOKEN = HASURA_CONFIG.token.admin;
+    var url_data = "https://data.brood19.hasura-app.io/";
+    var url_data_query = url_data + "v1/query";
+    var ACCESS_TOKEN = "8a620887b334de0ecce79da4f2fdce7900517fa69f3cd6d1";
 
     // Define Fetch headers
     let _headers = {
