@@ -10,7 +10,7 @@ var fetch  = require('node-fetch');
 var util = require('util');
 
 var hasuraExamplesRouter = require('./hasuraExamples');
-var projectConfig = require('./config');
+// var projectConfig = require('./config');
 var server = require('http').Server(app);
 
 router.use(morgan('dev'));
@@ -32,12 +32,12 @@ app.get("/intercom", function (req, res)
 
 const HASURA_CONFIG = {
   urls: {
-    data: "https://data." + projectConfig.cluster + ".hasura-app.io/v1/query"
+    data: "https://data.brood19.hasura-app.io/v1/query"
   },
   token: {
     admin: "8a620887b334de0ecce79da4f2fdce7900517fa69f3cd6d1"
   }
-}
+};
 
 /*
  * Router middleware to handle CORS issues
@@ -250,7 +250,7 @@ app.get("/get_value", function (req, res)
 
 });
 
-var port = process.env.PORT || 8000;
+var port = process.env.PORT || 8080;
 
 app.listen(port, () => {
   console.log('Example app listening on port ' + port);
