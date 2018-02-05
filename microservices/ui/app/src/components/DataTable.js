@@ -140,18 +140,18 @@ class DataTable extends Component {
   }
 
   uploadTableData() {
-    // Check if data is empty
-    if (this.state.data.length === 0) {
-      window.appLog("Empty data; terminating.");
-      return;
-    }
-
     // Filter and remove empty row data
     let table = this.state.data.filter((object, idx) => {
       // Strip whitespace from fields and check length
       return  object.key && object.key.trim().length > 0 &&
               object.message && object.message.trim().length > 0;
     });
+
+    // Check if data is empty
+    if (!table || table.length === 0) {
+      window.appLog("Empty data; terminating.");
+      return;
+    }
 
     // Notify parent of upload status
     this.props.notifyUploadStatus('processing');
