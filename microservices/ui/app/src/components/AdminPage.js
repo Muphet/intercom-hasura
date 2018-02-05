@@ -114,7 +114,10 @@ class AdminPage extends Component {
   }
 
   triggerTableClear(event) { this.setState({ clearTable: true }); }
-  triggerDataUpload(event) { this.setState({ uploadTable: true }); }
+  triggerDataUpload(event) {
+    window.appLog("Preparing to upload data...");
+    this.setState({ uploadTable: true });
+  }
 
   componentDidUpdate(prevProps, prevState) {
     // Reset clear and upload state.

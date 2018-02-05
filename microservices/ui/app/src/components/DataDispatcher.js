@@ -23,12 +23,18 @@ export const dispatchTableData = (dataRows, onSuccess, onError) => {
     'headers': { 'Content-Type': 'application/json' }
   }
 
+  window.appLog("Received payload:");
+  console.log(payload);
+
+  window.appLog("Data dispatched to: " + API_URLS.add_entry);
   mFetch(
     API_URLS.add_entry, request_opts,
     (data) => {
+      window.appLog("Data submission successful");
       if (data.status === 'success') { onSuccess && onSuccess(null); }
     },
     (error) => {
+      window.appLog("Data submission error", true);
       if (error.status === 'error') { onError && onError(null); }
     }
   )

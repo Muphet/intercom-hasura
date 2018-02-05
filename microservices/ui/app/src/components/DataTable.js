@@ -141,7 +141,10 @@ class DataTable extends Component {
 
   uploadTableData() {
     // Check if data is empty
-    if (this.state.data.length === 0) return;
+    if (this.state.data.length === 0) {
+      window.appLog("Empty data; terminating.");
+      return;
+    }
 
     // Filter and remove empty row data
     let table = this.state.data.filter((object, idx) => {
@@ -152,6 +155,8 @@ class DataTable extends Component {
 
     // Notify parent of upload status
     this.props.notifyUploadStatus('processing');
+
+    window.appLog("Initiating data dispatch...");
 
     // Use mFetch to upload data
     dispatchTableData(
