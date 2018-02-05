@@ -226,11 +226,11 @@ app.post("/add_entries", function (req, res) {
     console.log(req.body); // populated!
 
     // Make sure keys are lowercase
-//     let data = req.body.data.map((value) => {
-//         return { ...value, key: value.key.toLowerCase() };
-//     });
+    var data = req.body.data.map((value) => {
+        return { ...value, key: value.key.toLowerCase() };
+    });
 
-    hasuraInsert(re.body.data, (response) => {
+    hasuraInsert(data, (response) => {
         if (response.affected_rows)
             res.status(200).send({ status: 'success' });
         else
