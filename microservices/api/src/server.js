@@ -226,8 +226,8 @@ app.post("/add_entries", function (req, res) {
     console.log(req.body); // populated!
 
     // Make sure keys are lowercase
-    var data = req.body.data.map((value) => {
-        return { ...value, key: value.key.toLowerCase() };
+    let data = req.body.data.map((value) => {
+        return { key: value.key.toLowerCase(), message: value.message };
     });
 
     hasuraInsert(data, (response) => {
