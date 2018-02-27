@@ -1,8 +1,11 @@
 var projectConfig = {
-    url: {
-        data: 'http://data.hasura/v1/query',
-    },
-    cluster: 'brood19'
+  url: {
+    data: 'http://data.hasura/v1/query',
+  },
+  cluster: 'brood19',
+  intercom: {
+    token: 'dG9rOmJjOGIwOTlkX2FkZTFfNDRmM19hNmNkX2ExZjE0YzVjODI3ZToxOjA='
+  }
 }
 
 if (process.env.ENVIRONMENT === 'dev') {

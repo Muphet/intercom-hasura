@@ -32,7 +32,7 @@ class App extends Component {
     super(props);
 
     // Initiate Intercom app
-    window.Intercom('boot', { app_id: 'wemz4eos' });
+    window.Intercom('boot', { app_id: 'wgo4fybe' });
   }
 
   render() {

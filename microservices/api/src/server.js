@@ -63,7 +63,7 @@ const intercomReply = (body, conversation_id) =>
     let query_url = 'https://api.intercom.io/conversations/' + conversation_id + '/reply';
 
     // Provided by Intercom
-    const ACCESS_TOKEN = 'dG9rOmVlMjcwZGNlX2U1OTVfNDcyNF9iNTEzXzEwMTIxYzk3OTdmZToxOjA=';
+    const ACCESS_TOKEN = projectConfig.intercom.token;
     // The representative admin id to be used for all reply dispatches
     const ADMIN_ID = '1733279';
     // Define Fetch headers
