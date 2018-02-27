@@ -35,7 +35,7 @@ const HASURA_CONFIG = {
         data: "https://data." + projectConfig.cluster + ".hasura-app.io/v1/query"
     },
     token: {
-        admin: "8a620887b334de0ecce79da4f2fdce7900517fa69f3cd6d1"
+        admin: "7d5f35d14d23f499678baa9d8022a05cb5f27cfb496bf597"
     }
 };
 
